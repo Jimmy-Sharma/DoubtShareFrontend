@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     ChakraProvider,
     CSSReset,
@@ -7,13 +7,35 @@ import {
     Heading,
     Select,
     Container,
-    Input, Button
+    Input, Button, Card, Text
 } from '@chakra-ui/react';
 import { MdArrowDropDown } from "react-icons/md";
 import axios from 'axios';
 import Navbar from './Navbar';
 
 const History = () => {
+
+
+    const [hist, setHist] = useState([])
+
+    const activeUser = JSON.parse(localStorage.getItem('Revly.io'));
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await fetch('https://doubtshare-ai75.onrender.com/doubts/history');
+                const data = await response.json();
+                setHist(data);
+                console.log(data)
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+
     return (
         <><Navbar />
             <ChakraProvider>
@@ -21,32 +43,23 @@ const History = () => {
                 <Flex h="100vh" flexDirection="column">
                     <Box bg="teal" color="white" p={4}>
                         <Heading as="h1" size="xl">
-                        History
+                            History
                         </Heading>
                     </Box>
-                    {/* <Container maxW="container.lg" mt={8} diplay="flex" justifyContent="center" alignItems="center">
-                        <Flex justifyContent="space-between" maxW="30%" mb={14} margin="auto">
-                            <Select icon={<MdArrowDropDown />} variant="filled" placeholder="Please select the type of doubt">
-                                <option value="tech">Technical</option>
-                                <option value="non">Non-Technical</option>
-                            </Select>
-                        </Flex>
-                        <Flex>
-                            <Input
-                                placeholder="Drop Your Doubt Here"
-                                variant="filled"
-                                bg="gray.100"
-                                p={4}
-                                borderRadius="md"
-                                boxShadow="md"
-                                mb={4}
-                                wrap="wrap"
-                            />
-                        </Flex>
-                        <Button colorScheme="teal" mb={8} >
-                            Search for Answers
-                        </Button>
-                    </Container> */}
+                    {
+                     hist.map((el) => {
+                            <Card maxW="sm" borderWidth="1px" borderRadius="lg" overflow="hidden">
+                                <Box p="6">
+                                    <Flex align="baseline">
+                                        <Heading as="h2" size="md" fontWeight="semibold" mb="2">
+                                            {el.doubtType == 'non' ? "Non-Technical" : "Technical"}
+                                        </Heading>
+                                    </Flex>
+                                    <Text color="gray.500">{el.doubts}</Text>
+                                </Box>
+                            </Card>
+                        })
+                    }
                 </Flex>
             </ChakraProvider>
         </>

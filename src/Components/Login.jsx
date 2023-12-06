@@ -27,15 +27,15 @@ const Login = () => {
     const formBackground = useColorModeValue('gray.400');
 
     const handleLogin = async () => {
+        const loginData = {
+            email,
+            password,
+        };
+        console.log(loginData)
         if (!email || !password) {
             toast.error("Please enter the inputs correctly.");
         } else {
             try {
-                const loginData = {
-                    email,
-                    password,
-                };
-
                 const response = await axios.post('https://doubtshare-ai75.onrender.com/users/login', loginData);
                 console.log('Login successful:', response.data);
                 localStorage.setItem('Revly.io', JSON.stringify(response.data))

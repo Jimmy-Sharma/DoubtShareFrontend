@@ -12,6 +12,7 @@ import {
 import { MdArrowDropDown } from "react-icons/md";
 import axios from 'axios';
 import Navbar from './Navbar';
+import { toast } from 'react-hot-toast';
 
 const Dashboard = () => {
 
@@ -21,20 +22,22 @@ const Dashboard = () => {
     const activeUser = JSON.parse(localStorage.getItem('Revly.io'));
     console.log(activeUser.email);
 
-    const data = {
-        email: activeUser.email,
-        doubts,
-        doubtType,
-    };
-
     const handleDoubtSearch = () => {
 
-        axios.post('https://doubtshare-ai75.onrender.com/doubts/register', data)
+        const data = {
+            email: activeUser.email,
+            doubts,
+            doubtType,
+        };
+
+        axios.post('https://doubtshare-ai75.onrender.com/doubts/create', data)
             .then((response) => {
                 console.log('Doubt submitted successfully:', response.data);
+                toast.success("Doubt submitted successfully")
             })
             .catch((error) => {
                 console.error('Error submitting doubt:', error);
+                toast.error("Error submitting doubt")
             });
     };
 
